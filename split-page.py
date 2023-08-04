@@ -4,24 +4,24 @@
 import copy
 import sys
 import math
-import pyPdf
+import PyPDF2 as pyPdf
 
 def split_pages(src, dst):
-	src_f = file(src, 'r+b')
-	dst_f = file(dst, 'w+b')
+	src_f = open(src, 'r+b')
+	dst_f = open(dst, 'w+b')
 
-	input = pyPdf.PdfFileReader(src_f)
-	output = pyPdf.PdfFileWriter()
+	input = pyPdf.PdfReader(src_f)
+	output = pyPdf.PdfWriter()
 
-	for i in range(input.getNumPages()):
-		p = input.getPage(i)
+	for i in range(len(input.pages)):
+		p = input.pages[i]
 		q = copy.copy(p)
 		r = copy.copy(p)
-		q.mediaBox = copy.copy(p.mediaBox)
-		r.mediaBox = copy.copy(p.mediaBox)
+		q.mediabox = copy.copy(p.mediabox)
+		r.mediabox = copy.copy(p.mediabox)
 
-		x1, x2 = p.mediaBox.lowerLeft
-		x3, x4 = p.mediaBox.upperRight
+		x1, x2 = p.mediabox.lower_left
+		x3, x4 = p.mediabox.upper_right
 
 		x1, x2 = math.floor(x1), math.floor(x2)
 		x3, x4 = math.floor(x3), math.floor(x4)
@@ -29,24 +29,24 @@ def split_pages(src, dst):
 		x7, x8 = math.floor(2*x3/3), math.floor(2*x4/3)
 		
 		# vertical
-		p.mediaBox.upperRight = (x3, x6)
-		p.mediaBox.lowerLeft = (x1, x2)
+		p.mediabox.upper_right = (x3, x6)
+		p.mediabox.lower_left = (x1, x2)
 
-		q.mediaBox.upperRight = (x3, x8)
-		q.mediaBox.lowerLeft = (x1, x6)
+		q.mediabox.upper_right = (x3, x8)
+		q.mediabox.lower_left = (x1, x6)
 
-		r.mediaBox.upperRight = (x3, x4)
-		r.mediaBox.lowerLeft = (x1, x8)
+		r.mediabox.upper_right = (x3, x4)
+		r.mediabox.lower_left = (x1, x8)
 
-		output.addPage(r)
-		output.addPage(q)
-	output.addPage(p)
+		output.add_page(r)
+		output.add_page(q)
+		output.add_page(p)
 
 	output.write(dst_f)
 	src_f.close()
 	dst_f.close()
 
-input_file=raw_input("Enter the original PDF file name :")
-output_file=raw_input("Enter the splitted PDF file name :")
+input_file= input("Enter the original PDF file name :")
+output_file=input_file.replace(".pdf","_cut.pdf")
 
 split_pages(input_file,output_file)
