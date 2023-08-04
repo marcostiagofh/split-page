@@ -1,6 +1,7 @@
 # Adapted from https://gist.github.com/tshrinivasan/23d8e4986cbae49b8a8c
-# This program picks pdf pages and split each of them in 3 new same-size pages, with horizontal cuts on the original page. Its useful because you can read without scrolling, by just passing page-to-page
-
+# This program iterates over all .pdf files in the current folder; for each of the files, it picks pdf pages and split each of them in 3 new same-size pages, with horizontal cuts on the original page. Its useful because you can read without scrolling, by just passing page-to-page
+import sys
+import os
 import copy
 import sys
 import math
@@ -46,7 +47,9 @@ def split_pages(src, dst):
 	src_f.close()
 	dst_f.close()
 
-input_file= input("Enter the original PDF file name :")
-output_file=input_file.replace(".pdf","_cut.pdf")
+for f in os.listdir("."):
+	if f[-4:] == ".pdf":
+		input_file = f 
+		output_file = 'cut_'+f
 
-split_pages(input_file,output_file)
+		split_pages(input_file,output_file)
